@@ -3,6 +3,8 @@ package com.example.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class StudentService {
@@ -19,5 +21,9 @@ public class StudentService {
                 .build();
 
         return studentRepository.save(student);
+    }
+
+    public List<Student> getAllStudents() {
+        return studentRepository.findAllByOrderByIdDesc();
     }
 }
