@@ -2,6 +2,7 @@ package com.example.rest;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,5 +17,10 @@ public class StudentController {
     @GetMapping
     public List<Student> getStudents() {
         return studentService.getAllStudents();
+    }
+
+    @GetMapping("/{id}")
+    public Student getStudent(@PathVariable Long id) {
+        return studentService.getStudentById(id);
     }
 }
