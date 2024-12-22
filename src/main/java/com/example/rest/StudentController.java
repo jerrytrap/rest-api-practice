@@ -3,7 +3,9 @@ package com.example.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/student")
@@ -22,10 +24,14 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteStudent(@PathVariable Long id) {
+    public Map<String, Object> deleteStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         studentService.delete(student);
 
-        return "Student deleted";
+        Map<String, Object> rsData = new HashMap<>();
+        rsData.put("resultCode", "200-1");
+        rsData.put("msg", "%d번 글을 삭제했습니다.".formatted(id));
+
+        return rsData;
     }
 }
