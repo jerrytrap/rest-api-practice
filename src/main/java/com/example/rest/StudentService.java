@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -15,7 +14,7 @@ public class StudentService {
         return studentRepository.count();
     }
 
-    public Student createUser(String name, Integer age) {
+    public Student createStudent(String name, Integer age) {
         Student student = Student.builder()
                 .name(name)
                 .age(age)

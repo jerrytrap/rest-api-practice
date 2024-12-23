@@ -4,15 +4,11 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/student")
@@ -37,7 +33,7 @@ public class StudentController {
 
         return new RsData(
                 "200-1",
-                "%d번 글을 삭제했습니다.".formatted(id)
+                "%d번 학생을 삭제했습니다.".formatted(id)
         );
     }
 
@@ -59,7 +55,27 @@ public class StudentController {
 
         return new RsData(
                 "200-1",
-                "%d번 글을 수정했습니다.".formatted(id)
+                "%d번 학생을 수정했습니다.".formatted(id)
+        );
+    }
+
+    record StudentCreateBody(
+            @NotBlank
+            @Length(min = 2)
+            String name,
+
+            @Min(8)
+            Integer age
+    ) {
+    }
+
+    @PostMapping
+    public RsData createStudent(@RequestBody @Valid StudentCreateBody body) {
+        Student student = studentService.createStudent(body.name, body.age);
+
+        return new RsData(
+                "200-1",
+                "%d번 학생을 추가했습니다.".formatted(student.getId())
         );
     }
 }

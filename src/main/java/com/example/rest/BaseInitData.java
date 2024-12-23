@@ -28,8 +28,8 @@ public class BaseInitData {
     public void work() {
         if (studentService.getCount() > 0) return;
 
-        Student student1 = studentService.createUser("이름1", 20);
-        Student student2 = studentService.createUser("이름2", 30);
-        Student student3 = studentService.createUser("이름3", 40);
+        Student student1 = studentService.createStudent("이름1", 20);
+        Student student2 = studentService.createStudent("이름2", 30);
+        Student student3 = studentService.createStudent("이름3", 40);
     }
 }
