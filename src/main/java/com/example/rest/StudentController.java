@@ -17,8 +17,11 @@ public class StudentController {
     private final StudentService studentService;
 
     @GetMapping
-    public List<Student> getStudents() {
-        return studentService.getAllStudents();
+    public List<StudentDto> getStudents() {
+        return studentService.getAllStudents()
+                .stream()
+                .map(StudentDto::new)
+                .toList();
     }
 
     @GetMapping("/{id}")
