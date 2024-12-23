@@ -35,4 +35,9 @@ public class StudentService {
     public void delete(Student student) {
         studentRepository.delete(student);
     }
+
+    public void modify(Student student, String name, Integer age) {
+        student.setName(name);
+        student.setAge(age);
+    }
 }
