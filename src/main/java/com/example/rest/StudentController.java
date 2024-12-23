@@ -59,7 +59,8 @@ public class StudentController {
 
         return new RsData(
                 "200-1",
-                "%d번 학생을 수정했습니다.".formatted(id)
+                "%d번 학생을 수정했습니다.".formatted(id),
+                new StudentDto(student)
         );
     }
 

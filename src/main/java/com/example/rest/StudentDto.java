@@ -1,5 +1,6 @@
 package com.example.rest;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -7,9 +8,15 @@ import java.time.LocalDateTime;
 @Getter
 public class StudentDto {
     private long id;
+
+    @JsonProperty("createdDateTime")
     private LocalDateTime createDate;
+
+    @JsonProperty("modifiedDateTime")
     private LocalDateTime modifyDate;
+
     private String name;
+
     private Integer age;
 
     public StudentDto(Student student) {
