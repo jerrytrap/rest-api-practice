@@ -1,9 +1,13 @@
 package com.example.rest;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -37,18 +41,21 @@ public class StudentController {
         );
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class StudentModifyBody {
-        private String name;
-        private Integer age;
+    record StudentModifyBody(
+            @NotBlank
+            @Length(min = 2)
+            String name,
+
+            @Min(8)
+            Integer age
+    ) {
     }
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData updateStudent(@PathVariable Long id, @RequestBody StudentModifyBody body) {
+    public RsData updateStudent(@PathVariable Long id, @RequestBody @Valid StudentModifyBody body) {
         Student student = studentService.getStudentById(id);
-        studentService.modify(student, body.getName(), body.getAge());
+        studentService.modify(student, body.name, body.age);
 
         return new RsData(
                 "200-1",
