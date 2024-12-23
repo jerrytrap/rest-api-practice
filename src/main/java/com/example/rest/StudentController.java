@@ -33,16 +33,14 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<RsData<Void>> deleteStudent(@PathVariable Long id) {
+    public RsData<Void> deleteStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         studentService.delete(student);
 
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(new RsData<>(
-                        "200-1",
-                        "%d번 글이 삭제되었습니다.".formatted(id)
-                ));
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 삭제되었습니다.".formatted(id)
+        );
     }
 
     record StudentModifyBody(
@@ -85,18 +83,16 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<RsData<StudentCreateResBody>> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
+    public RsData<StudentCreateResBody> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
         Student student = studentService.createStudent(body.name, body.age);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(new RsData<>(
-                        "200-1",
-                        "%d번 학생을 추가했습니다.".formatted(student.getId()),
-                        new StudentCreateResBody(
-                                new StudentDto(student),
-                                studentService.getCount()
-                        )
-                ));
+        return new RsData<>(
+                "200-1",
+                "%d번 학생을 추가했습니다.".formatted(student.getId()),
+                new StudentCreateResBody(
+                        new StudentDto(student),
+                        studentService.getCount()
+                )
+        );
     }
 }
