@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.rest.global;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

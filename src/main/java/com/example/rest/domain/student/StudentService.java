@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.rest.domain.student;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.rest.domain.student;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

@@ -1,5 +1,6 @@
-package com.example.rest;
+package com.example.rest.domain.student;
 
+import com.example.rest.global.BaseTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import lombok.*;

@@ -1,4 +1,4 @@
-package com.example.rest;
+package com.example.rest.domain.student;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
