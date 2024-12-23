@@ -64,7 +64,7 @@ public class StudentController {
         );
     }
 
-    record StudentCreateBody(
+    record StudentCreateReqBody(
             @NotBlank
             @Length(min = 2)
             String name,
@@ -74,13 +74,23 @@ public class StudentController {
     ) {
     }
 
+    record StudentCreateResBody(
+            StudentDto studentDto,
+            long totalCount
+    ) {
+    }
+
     @PostMapping
-    public RsData<Long> createStudent(@RequestBody @Valid StudentCreateBody body) {
+    public RsData<StudentCreateResBody> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
         Student student = studentService.createStudent(body.name, body.age);
 
         return new RsData<>(
                 "200-1",
-                "%d번 학생을 추가했습니다.".formatted(student.getId())
+                "%d번 학생을 추가했습니다.".formatted(student.getId()),
+                new StudentCreateResBody(
+                        new StudentDto(student),
+                        studentService.getCount()
+                )
         );
     }
 }
