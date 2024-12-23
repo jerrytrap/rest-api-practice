@@ -1,6 +1,7 @@
 package com.example.rest.global;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,6 +46,18 @@ public class GlobalExceptionHandler {
                 .body(new RsData<>(
                         "400-1",
                         message
+                ));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<RsData<Void>> handle(IllegalArgumentException e) {
+        if (AppConfig.isNotProd()) e.printStackTrace();
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new RsData<>(
+                        "400-1",
+                        e.getMessage()
                 ));
     }
 }

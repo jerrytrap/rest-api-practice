@@ -13,6 +13,11 @@ public class ReportService {
     }
 
     public Report create(String title, String content) {
+        reportRepository.findByTitle(title)
+                .ifPresent(_ -> {
+                    throw new IllegalArgumentException("Report already exists");
+                });
+
         Report report = Report.builder()
                 .title(title)
                 .content(content)
