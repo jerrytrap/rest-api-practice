@@ -33,14 +33,16 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public RsData<Void> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<RsData<Void>> deleteStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         studentService.delete(student);
 
-        return new RsData<>(
-                "200-1",
-                "%d번 학생을 삭제했습니다.".formatted(id)
-        );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(new RsData<>(
+                        "200-1",
+                        "%d번 글이 삭제되었습니다.".formatted(id)
+                ));
     }
 
     record StudentModifyBody(
