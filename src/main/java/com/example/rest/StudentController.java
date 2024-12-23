@@ -27,15 +27,14 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public Map<String, Object> deleteStudent(@PathVariable Long id) {
+    public RsData deleteStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         studentService.delete(student);
 
-        Map<String, Object> rsData = new HashMap<>();
-        rsData.put("resultCode", "200-1");
-        rsData.put("msg", "%d번 글을 삭제했습니다.".formatted(id));
-
-        return rsData;
+        return new RsData(
+                "200-1",
+                "%d번 글을 삭제했습니다.".formatted(id)
+        );
     }
 
     @AllArgsConstructor
@@ -47,14 +46,13 @@ public class StudentController {
 
     @PutMapping("/{id}")
     @Transactional
-    public Map<String, Object> updateStudent(@PathVariable Long id, @RequestBody StudentModifyBody body) {
+    public RsData updateStudent(@PathVariable Long id, @RequestBody StudentModifyBody body) {
         Student student = studentService.getStudentById(id);
         studentService.modify(student, body.getName(), body.getAge());
 
-        Map<String, Object> rsData = new HashMap<>();
-        rsData.put("resultCode", "200-1");
-        rsData.put("msg", "%d번 글을 수정했습니다.".formatted(id));
-
-        return rsData;
+        return new RsData(
+                "200-1",
+                "%d번 글을 수정했습니다.".formatted(id)
+        );
     }
 }
