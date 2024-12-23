@@ -49,15 +49,14 @@ public class GlobalExceptionHandler {
                 ));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<RsData<Void>> handle(IllegalArgumentException e) {
+    @ExceptionHandler(ServiceException.class)
+    public ResponseEntity<RsData<Void>> handle(ServiceException e) {
         if (AppConfig.isNotProd()) e.printStackTrace();
 
+        RsData<Void> rsData = e.getRsData();
+
         return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new RsData<>(
-                        "400-1",
-                        e.getMessage()
-                ));
+                .status(rsData.getStatusCode())
+                .body(rsData);
     }
 }

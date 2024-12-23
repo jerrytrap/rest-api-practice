@@ -1,5 +1,6 @@
 package com.example.rest.domain.report;
 
+import com.example.rest.global.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class ReportService {
     public Report create(String title, String content) {
         reportRepository.findByTitle(title)
                 .ifPresent(_ -> {
-                    throw new IllegalArgumentException("Report already exists");
+                    throw new ServiceException("400-1", "Report already exists");
                 });
 
         Report report = Report.builder()
