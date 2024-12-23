@@ -1,5 +1,6 @@
 package com.example.rest.domain.report;
 
+import com.example.rest.domain.student.Student;
 import com.example.rest.global.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,14 @@ public class ReportService {
         return reportRepository.count();
     }
 
-    public Report create(String title, String content) {
+    public Report create(Student author, String title, String content) {
         reportRepository.findByTitle(title)
                 .ifPresent(_ -> {
                     throw new ServiceException("400-1", "Report already exists");
                 });
 
         Report report = Report.builder()
+                .author(author)
                 .title(title)
                 .content(content)
                 .build();

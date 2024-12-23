@@ -1,5 +1,6 @@
 package com.example.rest.domain.report;
 
+import com.example.rest.domain.student.StudentDto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
@@ -15,6 +16,8 @@ public class ReportDto {
     @JsonProperty("modifiedDateTime")
     private LocalDateTime modifyDate;
 
+    private StudentDto author;
+
     private String title;
 
     private String content;
@@ -23,6 +26,7 @@ public class ReportDto {
         this.id = report.getId();
         this.createDate = report.getCreateDate();
         this.modifyDate = report.getModifiedDate();
+        this.author = new StudentDto(report.getAuthor());
         this.title = report.getTitle();
         this.content = report.getContent();
     }

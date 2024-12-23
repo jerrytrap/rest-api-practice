@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,5 +39,9 @@ public class StudentService {
     public void modify(Student student, String name, Integer age) {
         student.setName(name);
         student.setAge(age);
+    }
+
+    public Optional<Student> findStudentByName(String name) {
+        return studentRepository.findByName(name);
     }
 }

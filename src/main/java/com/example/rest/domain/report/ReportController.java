@@ -1,5 +1,7 @@
 package com.example.rest.domain.report;
 
+import com.example.rest.domain.student.Student;
+import com.example.rest.domain.student.StudentService;
 import com.example.rest.global.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
+    private final StudentService studentService;
 
     record ReportReqBody(
             @NotBlank
@@ -34,8 +37,8 @@ public class ReportController {
 
     @PostMapping("/create")
     public RsData<ReportDto> create(@RequestBody @Valid ReportReqBody reportReqBody) {
-        Report report = reportService.create(reportReqBody.title, reportReqBody.content);
-
+        Student author = studentService.findStudentByName("이름3").get();
+        Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
                 "201-1",
                 "보고서: %s".formatted(report.getTitle()),
