@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -81,16 +83,18 @@ public class StudentController {
     }
 
     @PostMapping
-    public RsData<StudentCreateResBody> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
+    public ResponseEntity<RsData<StudentCreateResBody>> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
         Student student = studentService.createStudent(body.name, body.age);
 
-        return new RsData<>(
-                "200-1",
-                "%d번 학생을 추가했습니다.".formatted(student.getId()),
-                new StudentCreateResBody(
-                        new StudentDto(student),
-                        studentService.getCount()
-                )
-        );
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(new RsData<>(
+                        "200-1",
+                        "%d번 학생을 추가했습니다.".formatted(student.getId()),
+                        new StudentCreateResBody(
+                                new StudentDto(student),
+                                studentService.getCount()
+                        )
+                ));
     }
 }
