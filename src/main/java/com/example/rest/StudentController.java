@@ -31,11 +31,11 @@ public class StudentController {
     }
 
     @DeleteMapping("/{id}")
-    public RsData deleteStudent(@PathVariable Long id) {
+    public RsData<Void> deleteStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         studentService.delete(student);
 
-        return new RsData(
+        return new RsData<>(
                 "200-1",
                 "%d번 학생을 삭제했습니다.".formatted(id)
         );
@@ -53,11 +53,11 @@ public class StudentController {
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData updateStudent(@PathVariable Long id, @RequestBody @Valid StudentModifyBody body) {
+    public RsData<StudentDto> updateStudent(@PathVariable Long id, @RequestBody @Valid StudentModifyBody body) {
         Student student = studentService.getStudentById(id);
         studentService.modify(student, body.name, body.age);
 
-        return new RsData(
+        return new RsData<>(
                 "200-1",
                 "%d번 학생을 수정했습니다.".formatted(id),
                 new StudentDto(student)
@@ -75,10 +75,10 @@ public class StudentController {
     }
 
     @PostMapping
-    public RsData createStudent(@RequestBody @Valid StudentCreateBody body) {
+    public RsData<Long> createStudent(@RequestBody @Valid StudentCreateBody body) {
         Student student = studentService.createStudent(body.name, body.age);
 
-        return new RsData(
+        return new RsData<>(
                 "200-1",
                 "%d번 학생을 추가했습니다.".formatted(student.getId())
         );
