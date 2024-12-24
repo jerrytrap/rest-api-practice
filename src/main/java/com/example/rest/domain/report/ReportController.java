@@ -79,4 +79,26 @@ public class ReportController {
                 new ReportDto(report)
         );
     }
+
+    @DeleteMapping("/{id}")
+    public RsData<Void> delete(@PathVariable long id, Long authorId, String password) {
+        Student author = studentService.findStudentById(authorId).get();
+
+        if (!author.getPassword().equals(password)) {
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        }
+
+        Report report = reportService.findById(id);
+
+        if (!report.getAuthor().equals(author)) {
+            throw new ServiceException("403-1", "작성자만 글을 삭제할 권한이 있습니다.");
+        }
+
+        reportService.delete(report);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 글이 삭제되었습니다.".formatted(id)
+        );
+    }
 }

@@ -38,4 +38,8 @@ public class ReportService {
         report.setContent(content);
         reportRepository.save(report);
     }
+
+    public void delete(Report report) {
+        reportRepository.delete(report);
+    }
 }
