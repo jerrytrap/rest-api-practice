@@ -28,4 +28,14 @@ public class ReportService {
 
         return reportRepository.save(report);
     }
+
+    public Report findById(long id) {
+        return reportRepository.findById(id).get();
+    }
+
+    public void modify(Report report, String title, String content) {
+        report.setTitle(title);
+        report.setContent(content);
+        reportRepository.save(report);
+    }
 }

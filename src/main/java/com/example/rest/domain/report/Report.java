@@ -15,7 +15,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Report extends BaseTime {
-    @Column(unique = true, length = 20)
+    @Column(length = 20)
     private String title;
 
     @Column(length = 50)

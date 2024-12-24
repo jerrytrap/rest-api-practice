@@ -1,6 +1,7 @@
 package com.example.rest.domain.student;
 
 import com.example.rest.global.RsData;
+import com.example.rest.global.ServiceException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -51,7 +52,6 @@ public class StudentController {
             @NotBlank
             @Length(min = 2)
             String name,
-
             @Min(8)
             Integer age
     ) {
