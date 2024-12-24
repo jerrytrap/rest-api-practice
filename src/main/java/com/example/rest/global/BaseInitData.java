@@ -34,9 +34,9 @@ public class BaseInitData {
     public void createSampleStudents() {
         if (studentService.getCount() > 0) return;
 
-        Student student1 = studentService.createStudent("이름1", 20);
-        Student student2 = studentService.createStudent("이름2", 30);
-        Student student3 = studentService.createStudent("이름3", 40);
+        Student student1 = studentService.createStudent("이름1", 20, "1234");
+        Student student2 = studentService.createStudent("이름2", 30, "1234");
+        Student student3 = studentService.createStudent("이름3", 40, "1234");
     }
 
     @Transactional

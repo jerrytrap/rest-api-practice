@@ -16,4 +16,6 @@ public class Student extends BaseTime {
     private String name;
 
     private Integer age;
+
+    private String password;
 }

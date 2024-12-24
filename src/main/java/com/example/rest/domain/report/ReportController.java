@@ -3,6 +3,7 @@ package com.example.rest.domain.report;
 import com.example.rest.domain.student.Student;
 import com.example.rest.domain.student.StudentService;
 import com.example.rest.global.RsData;
+import com.example.rest.global.ServiceException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -28,7 +29,10 @@ public class ReportController {
             @Length(min = 5)
             String content,
             @NotNull
-            Long authorId
+            Long authorId,
+            @NotNull
+            @Length(min = 4)
+            String password
     ) {
     }
 
@@ -41,6 +45,11 @@ public class ReportController {
     @PostMapping("/create")
     public RsData<ReportDto> create(@RequestBody @Valid ReportReqBody reportReqBody) {
         Student author = studentService.findStudentById(reportReqBody.authorId).get();
+
+        if (!author.getPassword().equals(reportReqBody.password)) {
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        }
+
         Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
                 "201-1",

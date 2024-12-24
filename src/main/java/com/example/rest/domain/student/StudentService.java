@@ -15,10 +15,11 @@ public class StudentService {
         return studentRepository.count();
     }
 
-    public Student createStudent(String name, Integer age) {
+    public Student createStudent(String name, Integer age, String password) {
         Student student = Student.builder()
                 .name(name)
                 .age(age)
+                .password(password)
                 .build();
 
         return studentRepository.save(student);
