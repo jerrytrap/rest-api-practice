@@ -41,10 +41,14 @@ public class ReportController {
     }
 
     @PostMapping("/create")
-    public RsData<ReportDto> create(@RequestBody @Valid ReportReqBody reportReqBody) {
-        Student author = studentService.findStudentById(reportReqBody.authorId).get();
+    public RsData<ReportDto> create(
+            @RequestBody @Valid ReportReqBody reportReqBody,
+            @RequestHeader Long actorId,
+            @RequestHeader String actorPassword
+    ) {
+        Student author = studentService.findStudentById(actorId).get();
 
-        if (!author.getPassword().equals(reportReqBody.password)) {
+        if (!author.getPassword().equals(actorPassword)) {
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
         }
 
@@ -58,10 +62,15 @@ public class ReportController {
 
     @PutMapping("/{id}")
     @Transactional
-    public RsData<ReportDto> modify(@RequestBody @Valid ReportReqBody reportReqBody, @PathVariable long id) {
-        Student author = studentService.findStudentById(reportReqBody.authorId).get();
+    public RsData<ReportDto> modify(
+            @PathVariable long id,
+            @RequestBody @Valid ReportReqBody reportReqBody,
+            @RequestHeader Long actorId,
+            @RequestHeader String actorPassword
+    ) {
+        Student author = studentService.findStudentById(actorId).get();
 
-        if (!author.getPassword().equals(reportReqBody.password)) {
+        if (!author.getPassword().equals(actorPassword)) {
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
         }
 
@@ -81,10 +90,10 @@ public class ReportController {
     }
 
     @DeleteMapping("/{id}")
-    public RsData<Void> delete(@PathVariable long id, Long authorId, String password) {
-        Student author = studentService.findStudentById(authorId).get();
+    public RsData<Void> delete(@PathVariable long id, @RequestHeader("actorId") Long actorId, @RequestHeader("actorPassword") String actorPassword) {
+        Student author = studentService.findStudentById(actorId).get();
 
-        if (!author.getPassword().equals(password)) {
+        if (!author.getPassword().equals(actorPassword)) {
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
         }
 
