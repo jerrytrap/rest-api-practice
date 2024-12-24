@@ -44,4 +44,8 @@ public class StudentService {
     public Optional<Student> findStudentByName(String name) {
         return studentRepository.findByName(name);
     }
+
+    public Optional<Student> findStudentById(long studentId) {
+        return studentRepository.findById(studentId);
+    }
 }

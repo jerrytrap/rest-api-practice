@@ -5,6 +5,7 @@ import com.example.rest.domain.student.StudentService;
 import com.example.rest.global.RsData;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +26,9 @@ public class ReportController {
             String title,
             @NotBlank
             @Length(min = 5)
-            String content
+            String content,
+            @NotNull
+            Long authorId
     ) {
     }
 
@@ -37,7 +40,7 @@ public class ReportController {
 
     @PostMapping("/create")
     public RsData<ReportDto> create(@RequestBody @Valid ReportReqBody reportReqBody) {
-        Student author = studentService.findStudentByName("이름3").get();
+        Student author = studentService.findStudentById(reportReqBody.authorId).get();
         Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
                 "201-1",
