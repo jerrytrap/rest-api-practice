@@ -19,6 +19,20 @@ public class ReportController {
     private final ReportService reportService;
     private final StudentService studentService;
 
+    private Student checkAuthentication(String credentials) {
+        String[] credentialsBits = credentials.split("/", 2);
+        long studentId = Long.parseLong(credentialsBits[0]);
+        String studentPassword = credentialsBits[1];
+
+        Student student = studentService.findStudentById(studentId).get();
+
+        if (!student.getPassword().equals(studentPassword)) {
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        }
+
+        return student;
+    }
+
     record ReportReqBody(
             @NotBlank
             @Length(min = 5)
@@ -35,8 +49,8 @@ public class ReportController {
     }
 
     record ReportResBody(
-        ReportDto reportDto,
-        long totalCount
+            ReportDto reportDto,
+            long totalCount
     ) {
     }
 
@@ -44,13 +58,10 @@ public class ReportController {
     public RsData<ReportDto> create(
             @RequestBody @Valid ReportReqBody reportReqBody,
             @RequestHeader Long actorId,
-            @RequestHeader String actorPassword
+            @RequestHeader String actorPassword,
+            @RequestHeader String credentials
     ) {
-        Student author = studentService.findStudentById(actorId).get();
-
-        if (!author.getPassword().equals(actorPassword)) {
-            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
-        }
+        Student author = checkAuthentication(credentials);
 
         Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
@@ -66,13 +77,10 @@ public class ReportController {
             @PathVariable long id,
             @RequestBody @Valid ReportReqBody reportReqBody,
             @RequestHeader Long actorId,
-            @RequestHeader String actorPassword
+            @RequestHeader String actorPassword,
+            @RequestHeader String credentials
     ) {
-        Student author = studentService.findStudentById(actorId).get();
-
-        if (!author.getPassword().equals(actorPassword)) {
-            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
-        }
+        Student author = checkAuthentication(credentials);
 
         Report report = reportService.findById(id);
 
@@ -90,12 +98,13 @@ public class ReportController {
     }
 
     @DeleteMapping("/{id}")
-    public RsData<Void> delete(@PathVariable long id, @RequestHeader("actorId") Long actorId, @RequestHeader("actorPassword") String actorPassword) {
-        Student author = studentService.findStudentById(actorId).get();
-
-        if (!author.getPassword().equals(actorPassword)) {
-            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
-        }
+    public RsData<Void> delete(
+            @PathVariable long id,
+            @RequestHeader("actorId") Long actorId,
+            @RequestHeader("actorPassword") String actorPassword,
+            @RequestHeader String credentials
+    ) {
+        Student author = checkAuthentication(credentials);
 
         Report report = reportService.findById(id);
 
