@@ -20,6 +20,7 @@ public class ReportController {
     private final StudentService studentService;
 
     private Student checkAuthentication(String credentials) {
+        credentials = credentials.substring("Bearer ".length());
         String[] credentialsBits = credentials.split("/", 2);
         long studentId = Long.parseLong(credentialsBits[0]);
         String studentPassword = credentialsBits[1];
@@ -59,7 +60,7 @@ public class ReportController {
             @RequestBody @Valid ReportReqBody reportReqBody,
             @RequestHeader Long actorId,
             @RequestHeader String actorPassword,
-            @RequestHeader String credentials
+            @RequestHeader("Authorization") String credentials
     ) {
         Student author = checkAuthentication(credentials);
 
@@ -78,7 +79,7 @@ public class ReportController {
             @RequestBody @Valid ReportReqBody reportReqBody,
             @RequestHeader Long actorId,
             @RequestHeader String actorPassword,
-            @RequestHeader String credentials
+            @RequestHeader("Authorization") String credentials
     ) {
         Student author = checkAuthentication(credentials);
 
@@ -102,7 +103,7 @@ public class ReportController {
             @PathVariable long id,
             @RequestHeader("actorId") Long actorId,
             @RequestHeader("actorPassword") String actorPassword,
-            @RequestHeader String credentials
+            @RequestHeader("Authorization") String credentials
     ) {
         Student author = checkAuthentication(credentials);
 
