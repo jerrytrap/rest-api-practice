@@ -89,6 +89,22 @@ public class StudentController {
     ) {
     }
 
+    record StudentLoginReqBody(
+            @NotBlank
+            @Length(min = 4)
+            String username,
+            @NotBlank
+            @Length(min = 4)
+            String password
+    ) {
+    }
+
+    record StudentLoginResBody(
+            StudentDto item,
+            String apiKey
+    ) {
+    }
+
     @PostMapping
     public RsData<StudentCreateResBody> createStudent(@RequestBody @Valid StudentController.StudentCreateReqBody body) {
         Student student = studentService.createStudent(body.name, body.age, body.password);
@@ -99,6 +115,27 @@ public class StudentController {
                 new StudentCreateResBody(
                         new StudentDto(student),
                         studentService.getCount()
+                )
+        );
+    }
+
+    @PostMapping("/login")
+    public RsData<StudentLoginResBody> login(@RequestBody @Valid StudentLoginReqBody body) {
+        Student student = studentService.findStudentByName(body.username)
+                .orElseThrow(() -> new ServiceException("401-1", "해당 회원은 존재하지않습니다."));
+
+        if (!student.getPassword().equals(body.password)) {
+            throw new ServiceException("401-2", "비밀번호가 일치하지 않습니다.");
+        }
+
+        String apiKey = student.getApiKey();
+
+        return new RsData<>(
+                "201-1",
+                "%s님 환영합니다.".formatted(student.getName()),
+                new StudentLoginResBody(
+                        new StudentDto(student),
+                        apiKey
                 )
         );
     }
