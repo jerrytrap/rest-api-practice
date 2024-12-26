@@ -2,6 +2,7 @@ package com.example.rest.domain.student;
 
 import com.example.rest.global.RsData;
 import com.example.rest.global.ServiceException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -14,12 +15,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/student")
 @RequiredArgsConstructor
 public class StudentController {
     private final StudentService studentService;
+    private final HttpServletRequest request;
+
+    private Student checkAuthentication() {
+        String credentials = request.getHeader("Authorization");
+        String apiKey = credentials.substring("Bearer ".length());
+
+        Optional<Student> student = studentService.findStudentByApiKey(apiKey);
+
+        if (student.isEmpty()) {
+            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
+        }
+
+        return student.get();
+    }
 
     @GetMapping
     public List<StudentDto> getStudents() {
@@ -138,5 +154,12 @@ public class StudentController {
                         apiKey
                 )
         );
+    }
+
+    @GetMapping("/me")
+    public StudentDto getMe() {
+        Student student = checkAuthentication();
+
+        return new StudentDto(student);
     }
 }
