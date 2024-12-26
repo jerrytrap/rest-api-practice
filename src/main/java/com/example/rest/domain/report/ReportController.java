@@ -4,6 +4,7 @@ import com.example.rest.domain.student.Student;
 import com.example.rest.domain.student.StudentService;
 import com.example.rest.global.RsData;
 import com.example.rest.global.ServiceException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -18,8 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class ReportController {
     private final ReportService reportService;
     private final StudentService studentService;
+    private final HttpServletRequest request;
 
-    private Student checkAuthentication(String credentials) {
+    private Student checkAuthentication() {
+        String credentials = request.getHeader("Authorization");
         credentials = credentials.substring("Bearer ".length());
         String[] credentialsBits = credentials.split("/", 2);
         long studentId = Long.parseLong(credentialsBits[0]);
@@ -57,12 +60,9 @@ public class ReportController {
 
     @PostMapping("/create")
     public RsData<ReportDto> create(
-            @RequestBody @Valid ReportReqBody reportReqBody,
-            @RequestHeader Long actorId,
-            @RequestHeader String actorPassword,
-            @RequestHeader("Authorization") String credentials
+            @RequestBody @Valid ReportReqBody reportReqBody
     ) {
-        Student author = checkAuthentication(credentials);
+        Student author = checkAuthentication();
 
         Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
@@ -76,13 +76,9 @@ public class ReportController {
     @Transactional
     public RsData<ReportDto> modify(
             @PathVariable long id,
-            @RequestBody @Valid ReportReqBody reportReqBody,
-            @RequestHeader Long actorId,
-            @RequestHeader String actorPassword,
-            @RequestHeader("Authorization") String credentials
+            @RequestBody @Valid ReportReqBody reportReqBody
     ) {
-        Student author = checkAuthentication(credentials);
-
+        Student author = checkAuthentication();
         Report report = reportService.findById(id);
 
         if (!report.getAuthor().equals(author)) {
@@ -101,12 +97,9 @@ public class ReportController {
     @DeleteMapping("/{id}")
     public RsData<Void> delete(
             @PathVariable long id,
-            @RequestHeader("actorId") Long actorId,
-            @RequestHeader("actorPassword") String actorPassword,
-            @RequestHeader("Authorization") String credentials
+            @RequestHeader("actorId") Long actorId
     ) {
-        Student author = checkAuthentication(credentials);
-
+        Student author = checkAuthentication();
         Report report = reportService.findById(id);
 
         if (!report.getAuthor().equals(author)) {
