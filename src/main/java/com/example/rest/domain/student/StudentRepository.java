@@ -9,4 +9,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> findAllByOrderByIdDesc();
 
     Optional<Student> findByName(String name);
+
+    Optional<Student> findByApiKey(String apiKey);
 }

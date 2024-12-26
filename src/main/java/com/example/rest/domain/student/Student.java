@@ -18,4 +18,7 @@ public class Student extends BaseTime {
     private Integer age;
 
     private String password;
+
+    @Column(unique = true, length = 50)
+    private String apiKey;
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +21,7 @@ public class StudentService {
                 .name(name)
                 .age(age)
                 .password(password)
+                .apiKey(UUID.randomUUID().toString())
                 .build();
 
         return studentRepository.save(student);
@@ -48,5 +50,9 @@ public class StudentService {
 
     public Optional<Student> findStudentById(long studentId) {
         return studentRepository.findById(studentId);
+    }
+
+    public Optional<Student> findStudentByApiKey(String apiKey) {
+        return studentRepository.findByApiKey(apiKey);
     }
 }

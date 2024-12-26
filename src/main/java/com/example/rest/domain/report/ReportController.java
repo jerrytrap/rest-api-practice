@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
@@ -23,18 +25,15 @@ public class ReportController {
 
     private Student checkAuthentication() {
         String credentials = request.getHeader("Authorization");
-        credentials = credentials.substring("Bearer ".length());
-        String[] credentialsBits = credentials.split("/", 2);
-        long studentId = Long.parseLong(credentialsBits[0]);
-        String studentPassword = credentialsBits[1];
+        String apiKey = credentials.substring("Bearer ".length());
 
-        Student student = studentService.findStudentById(studentId).get();
+        Optional<Student> student = studentService.findStudentByApiKey(apiKey);
 
-        if (!student.getPassword().equals(studentPassword)) {
+        if (student.isEmpty()) {
             throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
         }
 
-        return student;
+        return student.get();
     }
 
     record ReportReqBody(
