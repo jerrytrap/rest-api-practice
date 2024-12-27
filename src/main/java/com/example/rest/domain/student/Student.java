@@ -21,4 +21,8 @@ public class Student extends BaseTime {
 
     @Column(unique = true, length = 50)
     private String apiKey;
+
+    public boolean isAdmin() {
+        return "admin".equals(name);
+    }
 }
