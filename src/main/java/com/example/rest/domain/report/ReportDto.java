@@ -10,10 +10,8 @@ import java.time.LocalDateTime;
 public class ReportDto {
     private long id;
 
-    @JsonProperty("createdDateTime")
     private LocalDateTime createDate;
 
-    @JsonProperty("modifiedDateTime")
     private LocalDateTime modifyDate;
 
     private StudentDto author;

@@ -61,7 +61,7 @@ public class ReportController {
             @RequestBody @Valid ReportReqBody reportReqBody
     ) {
         Student author = rq.checkAuthentication();
-        Report report = reportService.findById(id);
+        Report report = reportService.findById(id).get();
 
         if (!report.getAuthor().equals(author)) {
             throw new ServiceException("403-1", "작성자만 글을 수정할 권한이 있습니다.");
@@ -82,7 +82,7 @@ public class ReportController {
             @RequestHeader("actorId") Long actorId
     ) {
         Student author = rq.checkAuthentication();
-        Report report = reportService.findById(id);
+        Report report = reportService.findById(id).get();
 
         if (!report.getAuthor().equals(author)) {
             throw new ServiceException("403-1", "작성자만 글을 삭제할 권한이 있습니다.");

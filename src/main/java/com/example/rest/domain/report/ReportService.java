@@ -5,6 +5,8 @@ import com.example.rest.global.ServiceException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class ReportService {
@@ -29,8 +31,8 @@ public class ReportService {
         return reportRepository.save(report);
     }
 
-    public Report findById(long id) {
-        return reportRepository.findById(id).get();
+    public Optional<Report> findById(long id) {
+        return reportRepository.findById(id);
     }
 
     public void modify(Report report, String title, String content) {
