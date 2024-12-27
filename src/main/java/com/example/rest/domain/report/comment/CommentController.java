@@ -78,4 +78,39 @@ public class CommentController {
                 "%d번 댓글이 작성되었습니다.".formatted(comment.getId())
         );
     }
+
+    record CommentModifyReqBody(
+            @NotBlank
+            @Length(min = 2)
+            String content
+    ) {
+    }
+
+    @PutMapping("/{id}")
+    @Transactional
+    public RsData<Void> modifyComment(
+            @PathVariable long reportId,
+            @PathVariable long id,
+            @RequestBody CommentModifyReqBody body
+    ) {
+        Student student = rq.checkAuthentication();
+        Report report = reportService.findById(reportId).orElseThrow(
+                () -> new ServiceException("404-1", "%d번 글은 존재하지 않습니다.".formatted(reportId))
+        );
+
+        Comment comment = report.getCommentById(id).orElseThrow(
+                () -> new ServiceException("404-2", "%d번 댓글은 존재하지 않습니다.".formatted(id))
+        );
+
+        if (!comment.getAuthor().equals(student)) {
+            throw new ServiceException("403-1", "작성자만 수정할 수 있습니다.");
+        }
+
+        comment.modify(body.content);
+
+        return new RsData<>(
+                "200-1",
+                "%d번 댓글이 수정되었습니다.".formatted(comment.getId())
+        );
+    }
 }
