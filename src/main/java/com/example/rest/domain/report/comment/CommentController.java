@@ -2,12 +2,15 @@ package com.example.rest.domain.report.comment;
 
 import com.example.rest.domain.report.Report;
 import com.example.rest.domain.report.ReportService;
+import com.example.rest.domain.student.Student;
+import com.example.rest.global.Rq;
+import com.example.rest.global.RsData;
 import com.example.rest.global.ServiceException;
+import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.hibernate.validator.constraints.Length;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentController {
     private final ReportService reportService;
+    private final Rq rq;
 
     @GetMapping
     public List<CommentDto> getComments(@PathVariable Long reportId) {
@@ -42,5 +46,35 @@ public class CommentController {
                 .orElseThrow(
                         () -> new ServiceException("404-2", "%d번 댓글은 존재하지 않습니다.".formatted(id))
                 );
+    }
+
+    record CommentCreateReqBody(
+            @NotBlank
+            @Length(min = 2)
+            String content
+    ) {
+    }
+
+    @PostMapping
+    @Transactional
+    public RsData<Void> createComment(
+            @PathVariable Long reportId,
+            @RequestBody CommentCreateReqBody body
+    ) {
+        Student student = rq.checkAuthentication();
+
+        Report report = reportService.findById(reportId).orElseThrow(
+                () -> new ServiceException("404-1", "%d번 글은 존재하지 않습니다.".formatted(reportId))
+        );
+
+        Comment comment = report.addComment(
+                student,
+                body.content
+        );
+
+        return new RsData<>(
+                "201-1",
+                "%d번 댓글이 작성되었습니다.".formatted(comment.getId())
+        );
     }
 }

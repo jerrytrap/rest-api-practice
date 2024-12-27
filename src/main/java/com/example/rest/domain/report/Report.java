@@ -30,7 +30,7 @@ public class Report extends BaseTime {
     @Builder.Default
     private List<Comment> comments = new ArrayList<>();
 
-    public void addComment(Student author, String content) {
+    public Comment addComment(Student author, String content) {
         Comment comment = Comment.builder()
                 .report(this)
                 .author(author)
@@ -38,6 +38,7 @@ public class Report extends BaseTime {
                 .build();
 
         comments.add(comment);
+        return comment;
     }
 
     public List<Comment> getCommentsByOrderByIdDesc() {

@@ -2,7 +2,7 @@ package com.example.rest.global;
 
 import com.example.rest.domain.student.Student;
 import com.example.rest.domain.student.StudentService;
-import com.example.rest.global.ServiceException;
+import com.example.rest.util.Ut;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,14 @@ public class Rq {
 
     public Student checkAuthentication() {
         String credentials = request.getHeader("Authorization");
-        String apiKey = credentials.substring("Bearer ".length());
+        String apiKey = credentials == null?
+                ""
+                :
+                credentials.substring("Bearer ".length());
+
+        if (Ut.str.isBlank(apiKey)) {
+            throw new ServiceException("401-1", "api key를 입력해주세요.");
+        }
 
         Optional<Student> student = studentService.findStudentByApiKey(apiKey);
 
