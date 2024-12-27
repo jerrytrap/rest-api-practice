@@ -1,12 +1,13 @@
 package com.example.rest.domain.report;
 
+import com.example.rest.domain.report.comment.Comment;
 import com.example.rest.domain.student.Student;
 import com.example.rest.global.BaseTime;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -23,4 +24,18 @@ public class Report extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Student author;
+
+    @OneToMany(mappedBy = "report", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @Builder.Default
+    private List<Comment> comments = new ArrayList<>();
+
+    public void addComment(Student author, String content) {
+        Comment comment = Comment.builder()
+                .report(this)
+                .author(author)
+                .content(content)
+                .build();
+
+        comments.add(comment);
+    }
 }

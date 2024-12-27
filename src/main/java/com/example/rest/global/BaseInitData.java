@@ -45,8 +45,12 @@ public class BaseInitData {
 
         Student student1 = studentService.findStudentByName("이름1").get();
         Student student2 = studentService.findStudentByName("이름2").get();
+        Student student3 = studentService.findStudentByName("이름3").get();
 
         Report report1 = reportService.create(student1, "보고서1", "내용1");
+        report1.addComment(student2, "확인");
+        report1.addComment(student3, "다시");
+
         Report report2 = reportService.create(student1, "보고서2", "내용2");
         Report report3 = reportService.create(student2, "보고서3", "내용3");
     }
