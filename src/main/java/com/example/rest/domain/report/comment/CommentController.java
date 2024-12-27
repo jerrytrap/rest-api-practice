@@ -30,4 +30,22 @@ public class CommentController {
                 .map(CommentDto::new)
                 .toList();
     }
+
+    @GetMapping("/{id}")
+    public CommentDto getComment(@PathVariable Long reportId, @PathVariable Long id) {
+        Report report = reportService.findById(reportId).orElseThrow(
+                () -> new ServiceException("404-1", "%d번 글은 존재하지 않습니다.".formatted(reportId))
+        );
+
+        return report
+                .getComments()
+                .reversed()
+                .stream()
+                .filter(comment -> comment.getId() == id)
+                .map(CommentDto::new)
+                .findFirst()
+                .orElseThrow(
+                        () -> new ServiceException("404-2", "%d번 댓글은 존재하지 않습니다.".formatted(id))
+                );
+    }
 }
