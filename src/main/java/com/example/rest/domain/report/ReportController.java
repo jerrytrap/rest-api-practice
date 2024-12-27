@@ -1,10 +1,9 @@
 package com.example.rest.domain.report;
 
 import com.example.rest.domain.student.Student;
-import com.example.rest.domain.student.StudentService;
+import com.example.rest.global.Rq;
 import com.example.rest.global.RsData;
 import com.example.rest.global.ServiceException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -13,28 +12,12 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/v1/report")
 @RequiredArgsConstructor
 public class ReportController {
     private final ReportService reportService;
-    private final StudentService studentService;
-    private final HttpServletRequest request;
-
-    private Student checkAuthentication() {
-        String credentials = request.getHeader("Authorization");
-        String apiKey = credentials.substring("Bearer ".length());
-
-        Optional<Student> student = studentService.findStudentByApiKey(apiKey);
-
-        if (student.isEmpty()) {
-            throw new ServiceException("401-1", "비밀번호가 일치하지 않습니다.");
-        }
-
-        return student.get();
-    }
+    private final Rq rq;
 
     record ReportReqBody(
             @NotBlank
@@ -61,7 +44,7 @@ public class ReportController {
     public RsData<ReportDto> create(
             @RequestBody @Valid ReportReqBody reportReqBody
     ) {
-        Student author = checkAuthentication();
+        Student author = rq.checkAuthentication();
 
         Report report = reportService.create(author, reportReqBody.title, reportReqBody.content);
         return new RsData<>(
@@ -77,7 +60,7 @@ public class ReportController {
             @PathVariable long id,
             @RequestBody @Valid ReportReqBody reportReqBody
     ) {
-        Student author = checkAuthentication();
+        Student author = rq.checkAuthentication();
         Report report = reportService.findById(id);
 
         if (!report.getAuthor().equals(author)) {
@@ -98,7 +81,7 @@ public class ReportController {
             @PathVariable long id,
             @RequestHeader("actorId") Long actorId
     ) {
-        Student author = checkAuthentication();
+        Student author = rq.checkAuthentication();
         Report report = reportService.findById(id);
 
         if (!report.getAuthor().equals(author)) {
