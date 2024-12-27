@@ -51,4 +51,8 @@ public class Report extends BaseTime {
                 .filter(comment -> comment.getId() == id)
                 .findFirst();
     }
+
+    public void removeComment(Comment comment) {
+        comments.remove(comment);
+    }
 }
