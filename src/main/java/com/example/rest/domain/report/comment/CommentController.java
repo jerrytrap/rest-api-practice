@@ -6,13 +6,10 @@ import com.example.rest.domain.student.Student;
 import com.example.rest.global.Rq;
 import com.example.rest.global.RsData;
 import com.example.rest.global.ServiceException;
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/report/{reportId}/comment")
 @RequiredArgsConstructor
 public class CommentController {
-    private final EntityManager em;
     private final ReportService reportService;
     private final Rq rq;
 
@@ -75,7 +71,7 @@ public class CommentController {
                 student,
                 body.content
         );
-        em.flush();
+        reportService.flush();
 
         return new RsData<>(
                 "201-1",

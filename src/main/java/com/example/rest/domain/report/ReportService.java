@@ -44,4 +44,8 @@ public class ReportService {
     public void delete(Report report) {
         reportRepository.delete(report);
     }
+
+    public void flush() {
+        reportRepository.flush();
+    }
 }
