@@ -24,8 +24,7 @@ public class CommentController {
         );
 
         return report
-                .getComments()
-                .reversed()
+                .getCommentsByOrderByIdDesc()
                 .stream()
                 .map(CommentDto::new)
                 .toList();
@@ -38,12 +37,8 @@ public class CommentController {
         );
 
         return report
-                .getComments()
-                .reversed()
-                .stream()
-                .filter(comment -> comment.getId() == id)
+                .getCommentById(id)
                 .map(CommentDto::new)
-                .findFirst()
                 .orElseThrow(
                         () -> new ServiceException("404-2", "%d번 댓글은 존재하지 않습니다.".formatted(id))
                 );
