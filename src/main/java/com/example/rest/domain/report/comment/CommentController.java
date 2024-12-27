@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +20,9 @@ import java.util.List;
 @RequestMapping("/api/v1/report/{reportId}/comment")
 @RequiredArgsConstructor
 public class CommentController {
+    @Autowired
+    @Lazy
+    private CommentController self;
     private final ReportService reportService;
     private final Rq rq;
 
@@ -56,10 +61,22 @@ public class CommentController {
     }
 
     @PostMapping
-    @Transactional
     public RsData<Void> createComment(
             @PathVariable Long reportId,
             @RequestBody CommentCreateReqBody body
+    ) {
+        Comment comment = self._createComment(reportId, body);
+
+        return new RsData<>(
+                "201-1",
+                "%d번 댓글이 작성되었습니다.".formatted(comment.getId())
+        );
+    }
+
+    @Transactional
+    public Comment _createComment(
+            long reportId,
+            CommentCreateReqBody body
     ) {
         Student student = rq.checkAuthentication();
 
@@ -67,14 +84,9 @@ public class CommentController {
                 () -> new ServiceException("404-1", "%d번 글은 존재하지 않습니다.".formatted(reportId))
         );
 
-        Comment comment = report.addComment(
+        return report.addComment(
                 student,
                 body.content
-        );
-
-        return new RsData<>(
-                "201-1",
-                "%d번 댓글이 작성되었습니다.".formatted(comment.getId())
         );
     }
 }
